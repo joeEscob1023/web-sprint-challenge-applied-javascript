@@ -63,27 +63,37 @@ const cardAppender = (selector) => {
 
   const entryPoint = document.querySelector(selector);
 
-  axios.get(`https://lambda-times-api.herokuapp.com/articles`).then((res) => {
-    const itemsBootstrap = res.data.articles.bootstrap;
-    const itemsJS = res.data.articles.javascript;
-    const itemsJQ = res.data.articles.jquery;
-    const itemsNode = res.data.articles.node;
-    const itemsTech = res.data.articles.technology;
+  axios
+    .get(`https://lambda-times-api.herokuapp.com/articles`)
+    .then((res) => {
+      const itemsBootstrap = res.data.articles.bootstrap;
+      const itemsJS = res.data.articles.javascript;
+      const itemsJQ = res.data.articles.jquery;
+      const itemsNode = res.data.articles.node;
+      const itemsTech = res.data.articles.technology;
 
-    //created a function that loops through all of the languages without having to make a forEach for each variable
-    function articleItems(languages) {
+      //created a function that loops through all of the languages without having to make a forEach for each variable
+      function articleItems(languages) {
+        languages.forEach((language) => {
+          entryPoint.appendChild(Card(language));
+        });
+      }
+
+      //created a forEach to log articleItems() once instead of 5 times with each different item inside of articleItems()
+      const languages = [
+        itemsBootstrap,
+        itemsJS,
+        itemsJQ,
+        itemsNode,
+        itemsTech,
+      ];
+
       languages.forEach((language) => {
-        entryPoint.appendChild(Card(language));
+        articleItems(language);
       });
-    }
-
-    //created a forEach to log articleItems() once instead of 5 times with each different item inside of articleItems()
-    const languages = [itemsBootstrap, itemsJS, itemsJQ, itemsNode, itemsTech];
-
-    languages.forEach((language) => {
-      articleItems(language);
-    });
-  });
+    })
+    .catch((err) => console.log(err))
+    .finally(() => console.log("Done"));
 };
 
 export { Card, cardAppender };
