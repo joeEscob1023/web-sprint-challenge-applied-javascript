@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const Tabs = (topics) => {
   // TASK 3
   // ---------------------
@@ -7,14 +9,26 @@ const Tabs = (topics) => {
   // The tags used, the hierarchy of elements and their attributes must match the provided markup!
   // The text inside elements will be set using their `textContent` property (NOT `innerText`).
   //
+  const topicsDiv = document.createElement("div");
+  const tab = document.createElement("div");
+
+  //i added the squiggle because I couldn't figure out how to put a space between the divs. its just to make it more readable.
+  tab.textContent = `${topics} ~ `;
+
+  tab.classList.add("tab");
+
+  topicsDiv.appendChild(tab);
+
+  return topicsDiv;
   // <div class="topics">
   //   <div class="tab">javascript</div>
   //   <div class="tab">bootstrap</div>
   //   <div class="tab">technology</div>
   // </div>
   //
-}
+};
 
+//Couldn't figure out how to space the tabs so they're right next to each other, but they're all in their own div.
 const tabsAppender = (selector) => {
   // TASK 4
   // ---------------------
@@ -23,6 +37,19 @@ const tabsAppender = (selector) => {
   // Find the array of topics inside the response, and create the tabs using the Tabs component.
   // Append the tabs to the element in the DOM that matches the selector passed to the function.
   //
-}
 
-export { Tabs, tabsAppender }
+  const entryPoint = document.querySelector(selector);
+
+  axios
+    .get(`https://lambda-times-api.herokuapp.com/topics`)
+    .then((res) => {
+      const topics = res.data.topics;
+      topics.forEach((topic) => {
+        entryPoint.appendChild(Tabs(topic));
+      });
+    })
+    .catch((err) => console.log(err))
+    .finally(() => console.log("done"));
+};
+
+export { Tabs, tabsAppender };
